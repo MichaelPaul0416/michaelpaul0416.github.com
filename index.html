@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        个人博客</title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  
+  <meta name="generator" content="Hugo 0.69.0 with theme pure" />
+  <title>个人博客</title>
+  
+  <link rel="alternate" type="application/rss+xml" href="http://example.org/index.xml" title="个人博客" />
+  
+  <link rel="stylesheet" href="http://example.org/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="个人博客" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://example.org/" />
+<meta property="og:updated_time" content="2020-04-21T14:02:15+08:00" />
+<meta itemprop="name" content="个人博客">
+<meta itemprop="description" content=""><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="个人博客"/>
+<meta name="twitter:description" content=""/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header"><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+    
+
+<main class="main" role="main">
+  
+  <div class="content article-list">
+    
+    
+    
+    <article
+      class="article article-type-page"
+      itemscope
+      itemtype="http://schema.org/BlogPosting"
+    >
+      <div class="article-header">
+        <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/posts/helloworld/"
+    >Mysql 索引</a
+  >
+</h1>
+
+      </div>
+      <div class="article-entry text-muted" itemprop="description">
+        索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块+内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B+Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B+Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&gt;,&lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0.
+      </div>
+      <p class="article-meta">
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="http://example.org/posts/helloworld/" class="">
+  <time datetime="2020-04-21 14:02:15 &#43;0800 CST" itemprop="datePublished">2020-04-21</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/mysql/"> mysql </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/%E7%B4%A2%E5%BC%95/"> 索引 </a>
+    <a class="article-tag-link" href="/tags/mysql/"> mysql </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i> &nbsp;<a href="/posts/helloworld/#comments" class="article-comment-link">Comments</a></span>
+      </p>
+    </article></div>
+  
+<nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+    <ul class="pager pull-left">
+    </ul>
+    <div class="total-article bar-right">
+      Page:1/1
+    </div>
+  </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+  <div class="copyright">
+    &copy;&lt;nil&gt;  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="http://example.org/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="http://example.org/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'http:\/\/example.org\/',
+            CONTENT_URL: 'http:\/\/example.org\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="http://example.org/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+  </body>
+</html>

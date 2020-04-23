@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on 个人博客</title>
+    <link>http://example.org/categories/</link>
+    <description>Recent content in Categories on 个人博客</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 21 Apr 2020 14:02:15 +0800</lastBuildDate>
+    
+        <atom:link href="http://example.org/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mysql 索引</title>
+      <link>http://example.org/posts/helloworld/</link>
+      <pubDate>Tue, 21 Apr 2020 14:02:15 +0800</pubDate>
+      
+      <guid>http://example.org/posts/helloworld/</guid>
+      <description>索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块+内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B+Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B+Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&amp;gt;,&amp;lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&amp;gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0.</description>
+    </item>
+    
+  </channel>
+</rss>

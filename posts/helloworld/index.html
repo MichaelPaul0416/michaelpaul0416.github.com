@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Mysql 索引 - 个人博客
+      </title>
+    <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  
+  <meta name="theme-color" content="#000000" />
+  
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <meta name="description" content="索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块&#43;内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B&#43;Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B&#43;Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&amp;gt;,&amp;lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&amp;gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0." />
+  <meta name="generator" content="Hugo 0.69.0 with theme pure" />
+  <title>Mysql 索引 - 个人博客</title>
+  
+  
+  <link rel="stylesheet" href="http://example.org/css/style.min.c4bc7071f132c964c2116bca53b392933f377e5ca7b7051ed245187c621a2d3e.css">
+  
+  <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/9.15.10/styles/github.min.css" async>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.css" async>
+  <meta property="og:title" content="Mysql 索引" />
+<meta property="og:description" content="索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块&#43;内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B&#43;Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B&#43;Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&gt;,&lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://example.org/posts/helloworld/" />
+<meta property="article:published_time" content="2020-04-21T14:02:15+08:00" />
+<meta property="article:modified_time" content="2020-04-21T14:02:15+08:00" />
+<meta itemprop="name" content="Mysql 索引">
+<meta itemprop="description" content="索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块&#43;内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B&#43;Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B&#43;Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&gt;,&lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0.">
+<meta itemprop="datePublished" content="2020-04-21T14:02:15&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-21T14:02:15&#43;08:00" />
+<meta itemprop="wordCount" content="150">
+
+
+
+<meta itemprop="keywords" content="索引,mysql," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Mysql 索引"/>
+<meta name="twitter:description" content="索引分类  存储结构划分  BTree索引 哈希索引 full-index索引   应用层次划分  普通索引：一个索引只包含单个列，一个表可以有多个单列索引 唯一索引：索引列的值必须唯一，但是允许有空值 符合索引：一个索引包含多个列   表记录的排列顺序和索引顺序划分  聚集索引：表记录的排列顺序和索引的排列顺序一致 非聚集索引：表记录的排列顺序和索引的排列顺序不一致     磁盘io花费时间
+1.寻道时间
+ 磁臂移动到指定磁道所需要的时间，一般在5ms以下  2.旋转延迟
+ 指的是磁盘转速   3.传输时间
+ 从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计 计算机访问各硬件速度  m阶的B-Tree的特点
+1.每一个节点最多有m个子节点
+2.每一个非叶子节点（除根节点）最少有m/2个子节点
+3.如果根节点不是叶子节点，那么它至少有两个子节点
+4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]
+5.所有的叶子节点都在同一层
+比较：B-Tree寻找的过程分为加载磁盘块&#43;内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率
+ B&#43;Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息这样对于同一块磁盘块，就能存储更多的key，降低B&#43;Tree的高度 建立索引的原则  最左前缀匹配 mysql会一直向右匹配一直到遇到范围查询[&gt;,&lt;,between,like]就停止匹配 比如where a=1 and b=2 and c&gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的
+  =和in可以乱序 没有前后顺序区分
+  尽量选择区分度高的列作为索引 公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0."/>
+
+  <!--[if lte IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+    <![endif]-->
+
+  <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+  </head>
+
+  
+  
+
+  <body class="main-center" itemscope itemtype="http://schema.org/WebPage"><header class="header" itemscope itemtype="http://schema.org/WPHeader">
+    <div class="slimContent">
+      <div class="navbar-header"><div class="search" id="search-form-wrap">
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i
+                        class="icon icon-search"></i></button>
+            </span>
+        </div>
+        <div class="ins-search">
+            <div class="ins-search-mask"></div>
+            <div class="ins-search-container">
+                <div class="ins-input-wrapper">
+                    <input type="text" class="ins-search-input" placeholder="Type something..."
+                        x-webkit-speech />
+                    <button type="button" class="close ins-close ins-selectable" data-dismiss="modal"
+                        aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="ins-section-wrapper">
+                    <div class="ins-section-container"></div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+        <ul class="nav navbar-nav main-nav">
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+    
+<main class="main" role="main"><div class="content">
+  <article id="-" class="article article-type-" itemscope
+    itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      <h1 itemprop="name">
+  <a
+    class="article-title"
+    href="/posts/helloworld/"
+    >Mysql 索引</a
+  >
+</h1>
+
+      <div class="article-meta">
+        
+<span class="article-date">
+  <i class="icon icon-calendar-check"></i>&nbsp;
+<a href="http://example.org/posts/helloworld/" class="article-date">
+  <time datetime="2020-04-21 14:02:15 &#43;0800 CST" itemprop="datePublished">2020-04-21</time>
+</a>
+</span>
+<span class="article-category">
+  <i class="icon icon-folder"></i>&nbsp;
+  <a class="article-category-link" href="/categories/mysql/"> mysql </a>
+</span>  
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>&nbsp;
+    <a class="article-tag-link" href="/tags/%E7%B4%A2%E5%BC%95/"> 索引 </a>
+    <a class="article-tag-link" href="/tags/mysql/"> mysql </a>
+  </span>
+
+        <span class="post-comment"><i class="icon icon-comment"></i>&nbsp;<a href="/posts/helloworld/#comments"
+            class="article-comment-link">Comments</a></span>
+      </div>
+    </div>
+    <div class="article-entry marked-body js-toc-content" itemprop="articleBody">
+      <h1 id="索引分类">索引分类</h1>
+<ol>
+<li>存储结构划分
+<ol>
+<li>BTree索引</li>
+<li>哈希索引</li>
+<li>full-index索引</li>
+</ol>
+</li>
+<li>应用层次划分
+<ol>
+<li>普通索引：<code>一个索引只包含单个列，一个表可以有多个单列索引</code></li>
+<li>唯一索引：<code>索引列的值必须唯一，但是允许有空值</code></li>
+<li>符合索引：<code>一个索引包含多个列</code></li>
+</ol>
+</li>
+<li>表记录的排列顺序和索引顺序划分
+<ol>
+<li>聚集索引：<code>表记录的排列顺序和索引的排列顺序一致</code></li>
+<li>非聚集索引：<code>表记录的排列顺序和索引的排列顺序不一致</code></li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>磁盘io花费时间</p>
+<p>1.寻道时间</p>
+</blockquote>
+<pre><code>磁臂移动到指定磁道所需要的时间，一般在5ms以下
+</code></pre>
+<blockquote>
+<p>2.旋转延迟</p>
+</blockquote>
+<pre><code>指的是磁盘转速 
+</code></pre>
+<blockquote>
+<p>3.传输时间</p>
+</blockquote>
+<pre><code>从磁盘读出或者将数据写入磁盘的时间，一般在零点几毫秒，相较于前两个时间可以忽略不计
+</code></pre>
+<p><strong>计算机访问各硬件速度</strong>
+<img src="hardware_speed.jpg" alt="hard_speed" title="hardware_speed"></p>
+<blockquote>
+<p>m阶的B-Tree的特点</p>
+<p>1.每一个节点最多有m个子节点</p>
+<p>2.每一个非叶子节点（除根节点）最少有m/2个子节点</p>
+<p>3.如果根节点不是叶子节点，那么它至少有两个子节点</p>
+<p>4.有k个子节点的非叶子节点拥有k-1个键[键：主键值]</p>
+<p>5.所有的叶子节点都在同一层</p>
+<p>比较：<strong>B-Tree寻找的过程分为加载磁盘块+内存比较寻找；由于内存寻找的对象本身就是有序的，同时可以利用二分查找法进一步提高效率，所以整个过程中瓶颈在于磁盘操作加载磁盘块；B-Tree相对于AVLTree缩减了节点个数，使每次磁盘IO取到内存的数据都发挥了作用，从而提高效率</strong></p>
+</blockquote>
+<pre><code>B+Tree是在B-Tree上的一种优化；它的所有数据记录节点都是按照键值大小顺序存放在最尾层的叶子节点上，而非叶子节点只存储key的信息
+这样对于同一块磁盘块，就能存储更多的key，降低B+Tree的高度
+</code></pre>
+<h1 id="建立索引的原则">建立索引的原则</h1>
+<blockquote>
+<p>最左前缀匹配
+mysql会一直向右匹配一直到遇到范围查询[&gt;,&lt;,between,like]就停止匹配
+比如where a=1 and b=2 and c&gt;3 and d=4，此时建立(a,b,c,d)的联合索引，那么d索引是用不到的</p>
+</blockquote>
+<blockquote>
+<p><code>=</code>和<code>in</code>可以乱序
+没有前后顺序区分</p>
+</blockquote>
+<blockquote>
+<p>尽量选择区分度高的列作为索引
+公式是count(dictinct column)/count(*) 表示字段不重复的比例，比例越大表示区分度越高，主键的区分度为1，一般需要join的字段都要求是0.1以上</p>
+</blockquote>
+<blockquote>
+<p>索引列不参与计算
+B+Tree中村的都是数据表的字段值，进行检索的时候，需要把所有元素都使用函数计算后才能得到，这样成本太大</p>
+</blockquote>
+<blockquote>
+<p>尽量扩展索引，不要新建索引
+比如表中已经有a的索引，现在要加(a,b)的索引，那么只需要修改原来的索引即可</p>
+</blockquote>
+<h1 id="explain">explain</h1>
+<blockquote>
+<p>Id</p>
+</blockquote>
+<pre><code>&gt; 有几个select就有几个id；select查询分为simple简单查询和primary复杂查询；复杂查询由（简单子查询，派生表：from语句中的子查询，union子查询组成）
+&gt; id列越大执行的优先级越高，id相同则从上往下执行，id为null最后执行
+</code></pre>
+<blockquote>
+<p>select_type</p>
+</blockquote>
+<pre><code>&gt; 标识对应行是简单查询还是复杂的查询
+</code></pre>
+<blockquote>
+<p>table</p>
+</blockquote>
+<pre><code>&gt; 标识explain这一行正在访问哪个表；
+&gt; 当from子句中有子查询的时候，table列是格式，标识当前查询依赖id=N的查询
+&gt; 当有union的时候，union result的table的列的值是&lt;union 1,2&gt; 1,2标识参与union的select行id
+</code></pre>
+<blockquote>
+<p>partitions</p>
+</blockquote>
+<pre><code>&gt; 匹配的分区
+</code></pre>
+<blockquote>
+<p>type</p>
+</blockquote>
+<pre><code>&gt; 标识关联类型或者访问类型，最优到最差的类型分别是
+&gt; system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; all
+&gt; NULL:mysql能够在优化节点分解查询语句，在执行阶段就不用再访问表或者索引
+&gt; const,system：查询时对部分进行优化并且加将其转换成常量。primary key或者unique key的所有列与常数比较的时候，最多只有一个匹配行
+&gt; eq_ref：primary_key，unique_key索引的所有部分被链接使用，最多只会返回一条符合条件的记录。除const之外最好的链接类型
+&gt; ref：与eq_ref相比，不使用唯一索引，使用普通索引或者唯一索性的部分前缀，索引要和某个值比较，可能会找到多个符合条件的行
+&gt; range：通常出现在in,between,&gt;,&lt;,&gt;=等范围比较的操作中
+&gt; index：使用扫描全表索引，比ALL快一些。index是从索引中提取的，all是从读盘中读取
+&gt; all：全表扫描，mysql需要从头到尾查找所需要的行。
+</code></pre>
+<blockquote>
+<p>possible_keys</p>
+</blockquote>
+<pre><code>&gt; 显示查询可能使用哪些索引来查找。
+&gt; 可能会出现possible_keys有列，但是key显示NULL的情况，这种情况说明mysql觉得这张表中的数据不多，索引对查询的帮助不大
+&gt; 如果这一列是null，那么就没有相关的索引
+</code></pre>
+<blockquote>
+<p>key</p>
+</blockquote>
+<pre><code>&gt; mysql实际采用哪个索引来优化对表的访问
+</code></pre>
+<blockquote>
+<p>key_len</p>
+</blockquote>
+<pre><code>&gt; mysql在索引里使用的字节数，可以算出具体使用索引中的哪些列
+</code></pre>
+<blockquote>
+<p>ref</p>
+</blockquote>
+<pre><code>&gt; 在key列记录的索引中，表查找值所用到的列或者常量
+</code></pre>
+<blockquote>
+<p>rows</p>
+</blockquote>
+<pre><code>&gt; mysql估计需要读取并且检测的行数，并不是最终结果集里面的行数
+</code></pre>
+<blockquote>
+<p>filtered</p>
+<p>Extra</p>
+</blockquote>
+<pre><code>&gt; using index:查询的列被索引覆盖，并且where筛选条件是索引的最左侧索引。这个出现的话一般是使用了覆盖索引
+&gt; using where:查询的列未被索引覆盖，where筛选条件不是覆盖索引的最左侧索引
+&gt; using where using index:查询的列没有被索引覆盖，并且where筛选条件是索引列之一，但不是索引的最左前缀列，无法直接通过索引来查找符合条件的数据
+&gt; null:查询的列没有被索引覆盖，并且where筛选条件是索引的最左侧索引，意味着用到了索引，但是部分字段没有被索引覆盖，需要通过回表实现，不是纯粹的用到了索引，也不是完全没用到索引
+&gt; using index condition:与using where类似，查询的列不完全被索引覆盖，where条件中是一个最左前缀的范围
+&gt; using temporary:需要创建一张临时表来处理查询，出现这样的情况一般是需要优化的
+&gt; using filesort:对结果使用一个外部索引排序，而不是按照索引次数从表里面读取行。此时mysql会根据链接类型浏览所有符合条件的记录，并且保存排序关键字和行指针，然后排序关键字并按顺序检索行信息</code></pre>
+
+    </div>
+    <div class="article-footer">
+    </div>
+  </article>
+
+</div><nav class="bar bar-footer clearfix" data-stick-bottom>
+    <div class="bar-inner">
+        <div class="bar-right">
+        </div>
+    </div>
+</nav>
+
+</main><footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+  <div class="copyright">
+    &copy;&lt;nil&gt;  -
+    2020
+    <div class="publishby">
+        Theme by <a href="https://github.com/xiaoheiAh" target="_blank"> xiaoheiAh </a>base on<a href="https://github.com/xiaoheiAh/hugo-theme-pure" target="_blank"> pure</a>.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script>
+    window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+<script type="text/javascript" src="https://cdn.staticfile.org/highlight.js/9.15.10/highlight.min.js"></script><script>
+    hljs.configure({
+        tabReplace: '    ', 
+        classPrefix: ''     
+        
+    })
+    hljs.initHighlightingOnLoad();
+</script>
+<script src="http://example.org/js/application.min.bdeb64b910570b6c41badc6a05b7afb0c8ad9efd8525de3c7257d59e786326a3.js"></script>
+<script src="http://example.org/js/plugin.min.51ff8c7317566f82259170fa36e09c4493adc9b9378b427a01ad3f017ebac7dd.js"></script>
+
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: 'Posts',
+                PAGES: 'Pages',
+                CATEGORIES: 'Categories',
+                TAGS: 'Tags',
+                UNTITLED: '(Untitled)',
+            },
+            ROOT_URL: 'http:\/\/example.org\/',
+            CONTENT_URL: 'http:\/\/example.org\/\/searchindex.json ',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script type="text/javascript" src="http://example.org/js/insight.min.a343cd9a5a7698336b28ef3a7c16a3a1b1d2d5fb17dc8ed04022bbe08cc5459073a15bdafa3a8a58cdd56080784bdd69fa70b1ae8597565c799c57ed00f0e120.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.4.2/tocbot.min.js"></script>
+<script>
+    tocbot.init({
+        
+        tocSelector: '.js-toc',
+        
+        contentSelector: '.js-toc-content',
+        
+        headingSelector: 'h1, h2, h3',
+        
+        hasInnerContainers: true,
+    });
+</script>
+
+
+  </body>
+</html>
